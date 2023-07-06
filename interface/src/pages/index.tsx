@@ -1,8 +1,9 @@
 import { NextPage } from "next";
 import Head from "next/head";
 import NavBar from "../components/NavBar";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import useItemInView from "../hooks/useItemInView";
 
 const Home: NextPage = () => {
   const images = ["0_1.png", "0_2.png", "0_3.png", "0_4.png"];
@@ -19,6 +20,12 @@ const Home: NextPage = () => {
       clearInterval(interval);
     };
   }, [images.length]);
+
+  const observer1 = useRef<IntersectionObserver | null>(null);
+  const section1Ref = useItemInView(observer1, () =>
+    setIsStretched((prev) => !prev)
+  );
+
   return (
     <>
       <Head>
@@ -55,7 +62,10 @@ const Home: NextPage = () => {
         </div>
         <section className="flex flex-col gap-6 pt-20 bg-white ">
           <div className="px-4 mb-32 md:px-10 xl:px-28">
-            <h1 className="mb-6 text-4xl font-semibold text-center uppercase md:mb-20 md:text-left md:text-5xl">
+            <h1
+              ref={section1Ref}
+              className="mb-6 text-4xl font-semibold text-center uppercase md:mb-20 md:text-left md:text-5xl"
+            >
               Welcome Friend!
             </h1>
             <div className="flex items-center justify-center md:justify-between gap-14">
@@ -74,7 +84,7 @@ const Home: NextPage = () => {
           </div>
 
           <div
-            className="flex flex-col justify-center min-h-screen gap-8 px-4 py-40 md:px-32 clip-path-div text-slate-100"
+            className="flex flex-col justify-center min-h-screen gap-8 px-4 md:py-40 md:px-32 clip-path-div text-slate-100"
             style={{
               backgroundImage:
                 "linear-gradient(to left, rgba(0,0, 0, .4), rgba(0,0, 0, 0.9),rgba(0,0, 0, 1) ), url(images/0_2.png)",
