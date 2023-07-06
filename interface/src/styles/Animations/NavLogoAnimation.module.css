@@ -1,0 +1,51 @@
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  10% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.blink {
+  animation-name: blink;
+  animation-iteration-count: infinite;
+  animation-duration: 5000ms;
+}
+
+.blinkDelay1 {
+  animation-delay: 0s;
+}
+.blinkDelay2 {
+  animation-delay: 0.15s;
+}
+.blinkDelay3 {
+  animation-delay: 0.3s;
+}
+.blinkDelay4 {
+  animation-delay: 0.45s;
+}
+.blinkDelay5 {
+  animation-delay: 0.6s;
+}
+.blinkDelay6 {
+  animation-delay: 0.75s;
+}
+.blinkDelay7 {
+  animation-delay: 0.9s;
+}
+.blinkDelay8 {
+  animation-delay: 1.05s;
+}
+.blinkDelay9 {
+  animation-delay: 1.2s;
+}
