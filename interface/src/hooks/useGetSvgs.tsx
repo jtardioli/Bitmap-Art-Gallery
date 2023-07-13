@@ -1,13 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { useWallet } from "../contexts/WalletContext";
+
 import { ethers } from "ethers";
 import {
   bitmapContractABI,
   bitmapContractAddress,
 } from "../contracts/bitmapContract";
+import { Web3Provider } from "@ethersproject/providers";
+
+declare let window: any;
 
 const useGetSvgs = () => {
-  const { provider } = useWallet();
+  let provider: Web3Provider | undefined;
+
+  if (typeof window !== "undefined") {
+    if (window?.ethereum) {
+      provider = new ethers.providers.Web3Provider(window.ethereum);
+    }
+  }
 
   const bitmapContract = new ethers.Contract(
     bitmapContractAddress,

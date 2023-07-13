@@ -22,9 +22,7 @@ const Home: NextPage = () => {
   }, [images.length]);
 
   const observer1 = useRef<IntersectionObserver | null>(null);
-  const section1Ref = useItemInView(observer1, () =>
-    setIsStretched((prev) => !prev)
-  );
+  const section1Ref = useItemInView(observer1, () => {});
 
   return (
     <>
