@@ -6,89 +6,104 @@ import {
 import { Web3Provider } from "@ethersproject/providers";
 
 import styles from "../styles/Home.module.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useWallet } from "../contexts/WalletContext";
+import { Circles, SpinningCircles } from "react-loading-icons";
+
+async function createDelay(milliseconds: number) {
+  return await new Promise((resolve) => setTimeout(resolve, milliseconds));
+}
+
+const optimismChainId = "0x7a69";
 
 declare let window: any;
 
-function sleep(milliseconds: number) {
-  return new Promise((resolve) => setTimeout(resolve, milliseconds));
+enum MintButtonMode {
+  WALLET_NOT_CONNECTED,
+  WRONG_NETWORK_SELECTED,
+  READY_TO_MINT,
+  LOADING,
+  ERROR,
+  MINT_COMPLETED,
 }
 
-const chainID = "0x7a69";
-
 const MintButton = ({ currentHex }: { currentHex: string }) => {
-  const [message, setMessage] = useState("Connect Wallet");
+  const { address, provider, chainId, connectWallet, switchNetwork } =
+    useWallet();
+  const [mintButtonMode, setMintButtonMode] = useState<MintButtonMode>();
 
-  let provider: Web3Provider | undefined;
-
-  if (typeof window !== "undefined") {
-    if (window?.ethereum) {
-      provider = new ethers.providers.Web3Provider(window.ethereum);
-    }
-  }
-
-  /* 
-    Check If user has a browser wallet installed if they do request accounts
-  */
-  const connectWallet = async () => {
-    if (typeof window !== "undefined") {
-      if (window?.ethereum) {
-        await window.ethereum.enable();
-      } else {
-        setMessage("Install Metamask");
-      }
-    }
-  };
-
-  /* 
-    1. Check if user is currently connected to desired chain
-      a. If they are show the mint button
-      b. If they are not prompt them to switch networks 
-    2. Display the MINT button
-  */
-  const validateNetwork = async () => {
-    try {
-      const currentChainId = await window.ethereum.request({
-        method: "eth_chainId",
-      });
-
-      if (currentChainId === chainID) {
-        setMessage("MINT");
+  useEffect(() => {
+    (async () => {
+      /* Check if there is a connected wallet */
+      if (!address) {
+        setMintButtonMode(MintButtonMode.WALLET_NOT_CONNECTED);
         return;
       }
-      setMessage("Switch To Optimism");
 
-      await window.ethereum.request({
-        method: "wallet_switchEthereumChain",
-        params: [{ chainId: chainID }],
-      });
-      setMessage("MINT");
-    } catch (err) {
-      setMessage("Add Optimism Network");
-    }
-  };
+      /* Check if user is connected to the desired chain */
+      if (chainId !== optimismChainId) {
+        setMintButtonMode(MintButtonMode.WRONG_NETWORK_SELECTED);
+        return;
+      }
+
+      setMintButtonMode(MintButtonMode.READY_TO_MINT);
+    })();
+  }, [address, chainId]);
 
   const handleMintClick = async () => {
-    await connectWallet();
-    await validateNetwork();
+    if (mintButtonMode === MintButtonMode.WALLET_NOT_CONNECTED) {
+      await connectWallet();
+      return;
+    }
 
-    const bitmapContract = new ethers.Contract(
-      bitmapContractAddress,
-      bitmapContractABI,
-      provider?.getSigner()
-    );
+    if (mintButtonMode === MintButtonMode.WRONG_NETWORK_SELECTED) {
+      await switchNetwork(optimismChainId);
+      return;
+    }
 
-    setMessage("Loading");
-    const tx = await bitmapContract.mint(`0x${currentHex}`);
-    await tx.wait();
-    sleep(1000);
-    setMessage("Mint");
-    return;
+    if (mintButtonMode === MintButtonMode.READY_TO_MINT) {
+      try {
+        const bitmapContract = new ethers.Contract(
+          bitmapContractAddress,
+          bitmapContractABI,
+          provider?.getSigner()
+        );
+
+        setMintButtonMode(MintButtonMode.LOADING);
+        const tx = await bitmapContract.mint(`0x${currentHex}`);
+        await tx.wait();
+
+        /* 
+          This delays makes sure there is enough time for 
+          the user to see the wallet buttons displays success 
+        */
+        setMintButtonMode(MintButtonMode.MINT_COMPLETED);
+
+        await createDelay(1500);
+
+        setMintButtonMode(MintButtonMode.READY_TO_MINT);
+      } catch (error: any) {
+        // User declined the transaction
+        if (error.code === 4001) {
+          setMintButtonMode(MintButtonMode.READY_TO_MINT);
+          return;
+        }
+        setMintButtonMode(MintButtonMode.READY_TO_MINT);
+      }
+    }
   };
 
   return (
     <button className={styles.rainbow} onClick={handleMintClick}>
-      {message}
+      {mintButtonMode === MintButtonMode.WALLET_NOT_CONNECTED &&
+        "Connect Wallet"}
+      {mintButtonMode === MintButtonMode.WRONG_NETWORK_SELECTED &&
+        "Switch to optimism"}
+      {mintButtonMode === MintButtonMode.READY_TO_MINT && "MINT"}
+      {mintButtonMode === MintButtonMode.LOADING && (
+        <Circles height="3rem" fill="black" />
+      )}
+      {mintButtonMode === MintButtonMode.MINT_COMPLETED && "Mint Complete"}
     </button>
   );
 };

@@ -14,6 +14,7 @@ const Home: NextPage = () => {
   const [hex, setHex] = useState<string>(defaultHex);
   const [text, setText] = useState<string>(defaultHex);
   const [selectedHexValue, setSelectedHexValue] = useState<string>("0");
+
   const [history, setHistory] = useState<string[]>([defaultHex]);
   const [historyIndex, setHistoryIndex] = useState<number>(0);
 
@@ -41,7 +42,7 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>BitmatArt - Create</title>
+        <title>Studio - Bitmap Art</title>
         <meta
           name="Bitmap Art"
           content="on-chain 8x8 bitmap svg packed into a single storage slot"
@@ -52,17 +53,17 @@ const Home: NextPage = () => {
       </Head>
 
       <div className="flex flex-col items-center justify-center w-full h-screen ">
-        <div className="flex items-center justify-center w-full mt-5 ">
+        <div className="flex items-center justify-center w-full py-5 bg-black">
           <nav className="absolute items-center px-2 ml-auto left-3">
             <Link href="/gallery">
               <div className="flex items-center hover:cursor-pointer">
-                <RiGalleryLine size={25} />
-                <p className="ml-2">Gallery</p>
+                <RiGalleryLine color="white" size={25} />
+                <p className="ml-2 text-white">Gallery</p>
               </div>
             </Link>
           </nav>
 
-          <p className="mr-4 text-lg">Your Hex:</p>
+          <p className="mr-4 text-lg text-white">Your Hex:</p>
           <input
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               if (e.target.value.length === 64) {
@@ -79,7 +80,11 @@ const Home: NextPage = () => {
         </div>
 
         <div className="flex flex-col items-center justify-center w-full h-screen md:flex-row">
-          <div className="grid grid-cols-8 mb-5 mr-8 bg-white md:mb-0">
+          {/* Canvas */}
+          <div
+            className="grid grid-cols-8 mb-5 mr-8 bg-white md:mb-0"
+            style={{ boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px" }}
+          >
             {hex.split("").map((h, i) => {
               return (
                 <div
@@ -97,6 +102,7 @@ const Home: NextPage = () => {
               );
             })}
           </div>
+          {/* Color Selection */}
           <div>
             <div className="grid grid-cols-4 gap-2 mb-5">
               {Object.keys(colors).map((hexValue: string) => {
@@ -106,7 +112,7 @@ const Home: NextPage = () => {
                     onClick={() => {
                       setSelectedHexValue(hexValue);
                     }}
-                    className={`flex items-center justify-center w-12 h-12 md:w-20 md:h-20 text-2xl font-light  hover:border-2 hover:border-solid hover:border-black cursor-pointer `}
+                    className={`flex items-center justify-center w-12 h-12 md:w-20 md:h-20 text-2xl font-light  hover:border-2 hover:border-solid hover:border-black cursor-pointer  rounded-sm `}
                     style={{
                       backgroundColor: colors[hexValue],
                       border:
@@ -117,29 +123,31 @@ const Home: NextPage = () => {
               })}
             </div>
             <div className="flex justify-between w-full ">
-              <button
-                onClick={() => {
-                  if (historyIndex - 1 >= 0) {
-                    setHex(history[historyIndex - 1]);
-                    setHistoryIndex((prev) => prev - 1);
-                  }
-                }}
-                className="px-5 py-1 border-2 border-black"
-              >
-                Undo
-              </button>
+              <div className="flex gap-4">
+                <button
+                  onClick={() => {
+                    if (historyIndex - 1 >= 0) {
+                      setHex(history[historyIndex - 1]);
+                      setHistoryIndex((prev) => prev - 1);
+                    }
+                  }}
+                  className="px-5 py-1 text-gray-100 bg-black rounded-sm "
+                >
+                  Undo
+                </button>
 
-              <button
-                onClick={() => {
-                  if (historyIndex + 1 <= history.length - 1) {
-                    setHex(history[historyIndex + 1]);
-                    setHistoryIndex((prev) => prev + 1);
-                  }
-                }}
-                className="px-5 py-1 border-2 border-black"
-              >
-                Redo
-              </button>
+                <button
+                  onClick={() => {
+                    if (historyIndex + 1 <= history.length - 1) {
+                      setHex(history[historyIndex + 1]);
+                      setHistoryIndex((prev) => prev + 1);
+                    }
+                  }}
+                  className="px-5 py-1 text-gray-100 bg-black rounded-sm "
+                >
+                  Redo
+                </button>
+              </div>
 
               <button
                 onClick={() => {
@@ -148,7 +156,7 @@ const Home: NextPage = () => {
                   setHistoryIndex(0);
                   setText(defaultHex);
                 }}
-                className="px-5 py-1 text-red-600 border-2 border-red-600"
+                className="px-5 py-1 text-white bg-red-600 rounded-sm "
               >
                 Reset
               </button>
