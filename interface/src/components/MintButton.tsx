@@ -3,20 +3,14 @@ import {
   bitmapContractABI,
   bitmapContractAddress,
 } from "../contracts/bitmapContract";
-import { Web3Provider } from "@ethersproject/providers";
 
 import styles from "../styles/Home.module.css";
 import { useEffect, useState } from "react";
 import { useWallet } from "../contexts/WalletContext";
 import { Circles, SpinningCircles } from "react-loading-icons";
-
-async function createDelay(milliseconds: number) {
-  return await new Promise((resolve) => setTimeout(resolve, milliseconds));
-}
+import { createDelay } from "../utils/time";
 
 const optimismChainId = "0x7a69";
-
-declare let window: any;
 
 enum MintButtonMode {
   WALLET_NOT_CONNECTED,

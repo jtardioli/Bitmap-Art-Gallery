@@ -1,7 +1,7 @@
 import { hexlify, randomBytes } from "ethers/lib/utils";
 import type { NextPage } from "next";
 import Head from "next/head";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import MintButton from "../components/MintButton";
 import { colors } from "../config";
 import { RiGalleryLine } from "react-icons/ri";
@@ -39,6 +39,72 @@ const Home: NextPage = () => {
     setText(randomHex);
   };
 
+  /* 
+    handleUndo() and handleRedo() are defined within the component, thus they are being re-created on every render, 
+    this causes the useEffect to rerun excessively. We can solve this by using the useCallback Hook, which will return 
+    a memoized version of the callback that only changes if one of the dependencies has changed:
+  */
+  const handleUndo = useCallback(() => {
+    if (historyIndex - 1 >= 0) {
+      setHex(history[historyIndex - 1]);
+      setHistoryIndex((prev) => prev - 1);
+    }
+    console.log("handleUndo():: Ran");
+  }, [historyIndex, history]);
+
+  const handleRedo = useCallback(() => {
+    if (historyIndex + 1 <= history.length - 1) {
+      setHex(history[historyIndex + 1]);
+      setHistoryIndex((prev) => prev + 1);
+    }
+    console.log("handleRedo():: Ran");
+  }, [historyIndex, history]);
+
+  const handleReset = useCallback(() => {
+    if (historyIndex + 1 <= history.length - 1) {
+      setHex(history[historyIndex + 1]);
+      setHistoryIndex((prev) => prev + 1);
+    }
+    console.log("handleRedo():: Ran");
+  }, [historyIndex, history]);
+
+  /* Add event listeners for undo and redo commands */
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      /* 
+        Check for redo command 
+        cmd + shift + z
+        This if statement must come first to check if the shift key is being pressed
+      */
+      if (
+        (event.ctrlKey || event.metaKey) && // cmd or ctrl key
+        event.shiftKey &&
+        event.key === "z"
+      ) {
+        handleRedo();
+        return;
+      }
+
+      /* 
+        Check for undo command 
+        cmd + z
+      */
+      if (
+        (event.ctrlKey || event.metaKey) && // cmd or ctrl key
+        event.key === "z"
+      ) {
+        handleUndo();
+        return;
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleRedo, handleUndo]);
+
   return (
     <>
       <Head>
@@ -72,9 +138,12 @@ const Home: NextPage = () => {
               setText(e.target.value);
             }}
             value={text}
-            className="w-7/12 p-1 text-center"
+            className="w-7/12 p-1 text-center rounded-sm shadow-inner"
           />
-          <button className="p-1 ml-4 bg-white" onClick={randomizeHex}>
+          <button
+            className="px-6 py-1 ml-4 bg-pink-300 rounded-sm"
+            onClick={randomizeHex}
+          >
             Random
           </button>
         </div>
@@ -125,24 +194,14 @@ const Home: NextPage = () => {
             <div className="flex justify-between w-full ">
               <div className="flex gap-4">
                 <button
-                  onClick={() => {
-                    if (historyIndex - 1 >= 0) {
-                      setHex(history[historyIndex - 1]);
-                      setHistoryIndex((prev) => prev - 1);
-                    }
-                  }}
+                  onClick={handleUndo}
                   className="px-5 py-1 text-gray-100 bg-black rounded-sm "
                 >
                   Undo
                 </button>
 
                 <button
-                  onClick={() => {
-                    if (historyIndex + 1 <= history.length - 1) {
-                      setHex(history[historyIndex + 1]);
-                      setHistoryIndex((prev) => prev + 1);
-                    }
-                  }}
+                  onClick={handleRedo}
                   className="px-5 py-1 text-gray-100 bg-black rounded-sm "
                 >
                   Redo

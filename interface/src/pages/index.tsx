@@ -141,7 +141,7 @@ const Home: NextPage = () => {
             >
               {isStretched && (
                 <>
-                  <p> Gallery</p>
+                  <p>Gallery</p>
                   <button
                     className="fixed top-0 right-0 px-8 py-4 text-5xl text-white"
                     onClick={(e) => {
@@ -156,7 +156,7 @@ const Home: NextPage = () => {
             </div>
           </Link>
 
-          <Link href="create">
+          <Link href="/studio">
             <div
               className="fixed bottom-0 right-0 z-[50000] w-full shadow h-[50vh] border-t-2 text-slate-300 hover:text-white text-8xl flex items-center justify-center tracking-widest uppercase cursor-pointer"
               style={{

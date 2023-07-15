@@ -25,8 +25,8 @@ const NavBar = () => {
         <Link href="/gallery" className="hover:underline">
           Gallery
         </Link>
-        <Link href="/create" className="hover:underline">
-          Create
+        <Link href="/studio" className="hover:underline">
+          Studio
         </Link>
       </div>
     </nav>
