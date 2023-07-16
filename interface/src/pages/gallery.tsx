@@ -41,7 +41,7 @@ const All: NextPage = () => {
             </Link>
           </div>
         )}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-y-10 ">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-y-10 gap-x-14">
           {svgs.map((svg) => {
             return (
               <div

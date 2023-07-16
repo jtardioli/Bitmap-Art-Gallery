@@ -6,104 +6,40 @@ import MintButton from "../components/MintButton";
 import { colors } from "../config";
 import { RiGalleryLine } from "react-icons/ri";
 import Link from "next/link";
+import { useCanvasHistory } from "../hooks/useCanvasHistory";
 
-const defaultHex =
+export const defaultHex =
   "0000000000000000000000000000000000000000000000000000000000000000";
 
 const Home: NextPage = () => {
   const [hex, setHex] = useState<string>(defaultHex);
-  const [text, setText] = useState<string>(defaultHex);
-  const [selectedHexValue, setSelectedHexValue] = useState<string>("0");
+  /* 
+    Having a separate displayed hex allows the user to edit the hex without causing 
+    potential errors while rendering the canvas.
+  */
+  const [displayedHex, setDisplayedHex] = useState<string>(defaultHex);
 
-  const [history, setHistory] = useState<string[]>([defaultHex]);
-  const [historyIndex, setHistoryIndex] = useState<number>(0);
+  const [selectedHexValue, setSelectedHexValue] = useState<string>("0"); // Note this is the selected color as well
+
+  const {
+    syncHistoryOnCanvasUpdate,
+    handleRedo,
+    handleUndo,
+    handleResetHistory,
+  } = useCanvasHistory(setHex);
 
   const updateHex = (newHex: string): void => {
-    // clear history path if change is made
-    if (historyIndex !== history.length - 1 && history.length > 1) {
-      setHistory((prev) => {
-        return prev.slice(0, historyIndex + 1);
-      });
-    }
-    setHistory((prev) => {
-      return [...prev, newHex];
-    });
-    setHistoryIndex((prev) => prev + 1);
+    syncHistoryOnCanvasUpdate(newHex);
     setHex(newHex);
-    setText(newHex);
+    setDisplayedHex(newHex);
   };
 
   const randomizeHex = (): void => {
     const randomHex = `${hexlify(randomBytes(32)).split("0x")[1]}`;
     setHex(randomHex);
-    setText(randomHex);
+    setDisplayedHex(randomHex);
+    handleResetHistory();
   };
-
-  /* 
-    handleUndo() and handleRedo() are defined within the component, thus they are being re-created on every render, 
-    this causes the useEffect to rerun excessively. We can solve this by using the useCallback Hook, which will return 
-    a memoized version of the callback that only changes if one of the dependencies has changed:
-  */
-  const handleUndo = useCallback(() => {
-    if (historyIndex - 1 >= 0) {
-      setHex(history[historyIndex - 1]);
-      setHistoryIndex((prev) => prev - 1);
-    }
-    console.log("handleUndo():: Ran");
-  }, [historyIndex, history]);
-
-  const handleRedo = useCallback(() => {
-    if (historyIndex + 1 <= history.length - 1) {
-      setHex(history[historyIndex + 1]);
-      setHistoryIndex((prev) => prev + 1);
-    }
-    console.log("handleRedo():: Ran");
-  }, [historyIndex, history]);
-
-  const handleReset = useCallback(() => {
-    if (historyIndex + 1 <= history.length - 1) {
-      setHex(history[historyIndex + 1]);
-      setHistoryIndex((prev) => prev + 1);
-    }
-    console.log("handleRedo():: Ran");
-  }, [historyIndex, history]);
-
-  /* Add event listeners for undo and redo commands */
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      /* 
-        Check for redo command 
-        cmd + shift + z
-        This if statement must come first to check if the shift key is being pressed
-      */
-      if (
-        (event.ctrlKey || event.metaKey) && // cmd or ctrl key
-        event.shiftKey &&
-        event.key === "z"
-      ) {
-        handleRedo();
-        return;
-      }
-
-      /* 
-        Check for undo command 
-        cmd + z
-      */
-      if (
-        (event.ctrlKey || event.metaKey) && // cmd or ctrl key
-        event.key === "z"
-      ) {
-        handleUndo();
-        return;
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [handleRedo, handleUndo]);
 
   return (
     <>
@@ -119,7 +55,7 @@ const Home: NextPage = () => {
       </Head>
 
       <div className="flex flex-col items-center justify-center w-full h-screen ">
-        <div className="flex items-center justify-center w-full py-5 bg-black">
+        <section className="flex items-center justify-center w-full py-5 bg-black">
           <nav className="absolute items-center px-2 ml-auto left-3">
             <Link href="/gallery">
               <div className="flex items-center hover:cursor-pointer">
@@ -135,9 +71,9 @@ const Home: NextPage = () => {
               if (e.target.value.length === 64) {
                 setHex(e.target.value);
               }
-              setText(e.target.value);
+              setDisplayedHex(e.target.value);
             }}
-            value={text}
+            value={displayedHex}
             className="w-7/12 p-1 text-center rounded-sm shadow-inner"
           />
           <button
@@ -146,7 +82,7 @@ const Home: NextPage = () => {
           >
             Random
           </button>
-        </div>
+        </section>
 
         <div className="flex flex-col items-center justify-center w-full h-screen md:flex-row">
           {/* Canvas */}
@@ -211,9 +147,8 @@ const Home: NextPage = () => {
               <button
                 onClick={() => {
                   setHex(defaultHex);
-                  setHistory([defaultHex]);
-                  setHistoryIndex(0);
-                  setText(defaultHex);
+                  setDisplayedHex(defaultHex);
+                  handleResetHistory();
                 }}
                 className="px-5 py-1 text-white bg-red-600 rounded-sm "
               >
