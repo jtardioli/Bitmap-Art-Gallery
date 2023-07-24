@@ -27,7 +27,7 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>BitmatArt - Create</title>
+        <title>BitmapArt - Create</title>
         <meta
           name="Bitmap Art"
           content="on-chain 8x8 bitmap svg packed into a single storage slot"

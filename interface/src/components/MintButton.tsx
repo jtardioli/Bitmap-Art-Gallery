@@ -92,7 +92,7 @@ const MintButton = ({ currentHex }: { currentHex: string }) => {
       {mintButtonMode === MintButtonMode.WALLET_NOT_CONNECTED &&
         "Connect Wallet"}
       {mintButtonMode === MintButtonMode.WRONG_NETWORK_SELECTED &&
-        "Switch to optimism"}
+        "Switch networks"}
       {mintButtonMode === MintButtonMode.READY_TO_MINT && "MINT"}
       {mintButtonMode === MintButtonMode.LOADING && (
         <Circles height="3rem" fill="black" />

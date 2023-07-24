@@ -6,17 +6,10 @@ import {
   bitmapContractAddress,
 } from "../contracts/bitmapContract";
 import { Web3Provider } from "@ethersproject/providers";
-
-declare let window: any;
+import { useWallet } from "../contexts/WalletContext";
 
 const useGetSvgs = () => {
-  let provider: Web3Provider | undefined;
-
-  if (typeof window !== "undefined") {
-    if (window?.ethereum) {
-      provider = new ethers.providers.Web3Provider(window.ethereum);
-    }
-  }
+  const { provider } = useWallet();
 
   const bitmapContract = new ethers.Contract(
     bitmapContractAddress,
@@ -54,9 +47,10 @@ const useGetSvgs = () => {
         });
 
         setSvgs(processedSvgs);
-        setIsLoading(false);
       } catch (error) {
         setIsError(true);
+        console.error(error);
+      } finally {
         setIsLoading(false);
       }
     })();

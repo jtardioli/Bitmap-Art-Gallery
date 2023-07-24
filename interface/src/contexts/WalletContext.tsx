@@ -1,4 +1,4 @@
-import { Web3Provider } from "@ethersproject/providers";
+import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import { ethers } from "ethers";
 import {
   createContext,
@@ -19,7 +19,7 @@ interface WalletContextValue {
   chainId: string;
   switchNetwork: (desiredChainId: string) => Promise<void>;
   connectWallet: () => Promise<void>;
-  provider: Web3Provider | undefined;
+  provider: JsonRpcProvider | undefined;
 }
 
 export const WalletContext = createContext<WalletContextValue>({
@@ -31,15 +31,15 @@ export const WalletContext = createContext<WalletContextValue>({
   provider: undefined,
 });
 
+// const RPC_URL = "https://mainnet.optimism.io";
+const RPC_URL = "http://localhost:8545";
+
 export const WalletContextProvider = ({
   children,
 }: {
   children: ReactNode;
 }) => {
-  let provider: Web3Provider | undefined;
-  if (typeof window !== "undefined" && window?.ethereum) {
-    provider = new ethers.providers.Web3Provider(window.ethereum);
-  }
+  const provider = new ethers.providers.JsonRpcProvider(RPC_URL);
 
   const [address, setAddress] = useState<string>("");
   const [chainId, setChainId] = useState<string>("");
