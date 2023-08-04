@@ -22,7 +22,7 @@ enum MintButtonMode {
 }
 
 const MintButton = ({ currentHex }: { currentHex: string }) => {
-  const { address, provider, chainId, connectWallet, switchNetwork } =
+  const { address, userProvider, chainId, connectWallet, switchNetwork } =
     useWallet();
   const [mintButtonMode, setMintButtonMode] = useState<MintButtonMode>();
 
@@ -60,7 +60,7 @@ const MintButton = ({ currentHex }: { currentHex: string }) => {
         const bitmapContract = new ethers.Contract(
           bitmapContractAddress,
           bitmapContractABI,
-          provider?.getSigner()
+          userProvider?.getSigner()
         );
 
         setMintButtonMode(MintButtonMode.LOADING);

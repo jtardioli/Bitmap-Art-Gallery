@@ -9,6 +9,8 @@ import {
   useEffect,
   useState,
 } from "react";
+import { getNetworkConfig } from "../config";
+import { error } from "console";
 
 /* This avoids errors when accessing window.ethereum */
 declare let window: any;
@@ -18,8 +20,10 @@ interface WalletContextValue {
   setAddress: Dispatch<SetStateAction<string>>;
   chainId: string;
   switchNetwork: (desiredChainId: string) => Promise<void>;
+  addNetwork: () => Promise<void>;
   connectWallet: () => Promise<void>;
   provider: JsonRpcProvider | undefined;
+  userProvider: Web3Provider | undefined;
 }
 
 export const WalletContext = createContext<WalletContextValue>({
@@ -27,8 +31,10 @@ export const WalletContext = createContext<WalletContextValue>({
   chainId: "",
   setAddress: () => {},
   switchNetwork: async () => {},
+  addNetwork: async () => {},
   connectWallet: async () => {},
   provider: undefined,
+  userProvider: undefined,
 });
 
 // const RPC_URL = "https://mainnet.optimism.io";
@@ -40,6 +46,10 @@ export const WalletContextProvider = ({
   children: ReactNode;
 }) => {
   const provider = new ethers.providers.JsonRpcProvider(RPC_URL);
+  let userProvider: Web3Provider | undefined;
+  if (typeof window.ethereum !== "undefined") {
+    userProvider = new ethers.providers.Web3Provider(window.ethereum);
+  }
 
   const [address, setAddress] = useState<string>("");
   const [chainId, setChainId] = useState<string>("");
@@ -67,22 +77,39 @@ export const WalletContextProvider = ({
     }
   }
 
+  async function addNetwork() {
+    const networkConfig = getNetworkConfig();
+    try {
+      await window.ethereum.request({
+        method: "wallet_addEthereumChain",
+        params: [networkConfig],
+      });
+      console.log("WalletContext::addNetwork() - Success", networkConfig);
+    } catch (err: any) {
+      console.log("WalletContext::addNetwork() -", err);
+    }
+  }
+
   /* 
     1. Check if user is currently connected to desired chain
       a. If they are show the mint button
       b. If they are not prompt them to switch networks 
     2. Display the MINT button
   */
-  const switchNetwork = async (desiredChainId: string) => {
+  async function switchNetwork(desiredChainId: string) {
     try {
       await window.ethereum.request({
         method: "wallet_switchEthereumChain",
         params: [{ chainId: desiredChainId }],
       });
-    } catch (err) {
-      console.log("WalletContext::switchNetwork()::", err);
+    } catch (err: any) {
+      console.log("WalletContext::switchNetwork() -", err);
+      if (err?.code === 4902) {
+        console.log("WalletContext::switchNetwork() - Trying to add network");
+        addNetwork();
+      }
     }
-  };
+  }
 
   /* 
    SUBSCRIPTIONS
@@ -130,8 +157,10 @@ export const WalletContextProvider = ({
     chainId,
     setAddress,
     switchNetwork,
+    addNetwork,
     connectWallet,
     provider,
+    userProvider,
   };
   return (
     <WalletContext.Provider value={value}>{children}</WalletContext.Provider>
