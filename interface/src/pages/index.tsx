@@ -76,7 +76,7 @@ const Home: NextPage = () => {
             </h1>
             <div className="flex items-center justify-center md:justify-between gap-14">
               <img
-                src="images/cool.jpg"
+                src="images/static/cool.jpg"
                 className="w-[40%] max-w-[600px] border-black border-[1px] shadow-lg hidden md:block"
               />
               <p className="w-full md:max-w-[55%] text-center md:text-left text-2xl text-slate-900 font-light leading-9 tracking-wide">
@@ -114,7 +114,7 @@ const Home: NextPage = () => {
 
           <div className="flex items-center justify-between gap-10 px-4 pb-20 mt-32 md:px-10 xl:px-28 text-slate-900">
             <img
-              src="images/forest.jpg"
+              src="images/static/forest.jpg"
               className="w-[40%] max-w-[600px] border-black border-[1px] shadow-lg hidden md:block"
             />
             <div className=" flex flex-col w-full md:max-w-[55%] text-2xl text-slate-900 font-light leading-10 tracking-wide">
