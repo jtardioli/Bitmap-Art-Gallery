@@ -47,7 +47,7 @@ export const WalletContextProvider = ({
 }) => {
   const provider = new ethers.providers.JsonRpcProvider(RPC_URL);
   let userProvider: Web3Provider | undefined;
-  if (typeof window.ethereum !== "undefined") {
+  if (typeof window !== "undefined" && window.ethereum) {
     userProvider = new ethers.providers.Web3Provider(window.ethereum);
   }
 

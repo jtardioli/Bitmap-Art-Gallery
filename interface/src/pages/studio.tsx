@@ -1,12 +1,13 @@
 import { hexlify, randomBytes } from "ethers/lib/utils";
 import type { NextPage } from "next";
 import Head from "next/head";
-import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import MintButton from "../components/MintButton";
-import { colors } from "../config";
+
 import { RiGalleryLine } from "react-icons/ri";
 import Link from "next/link";
 import { useCanvasHistory } from "../hooks/useCanvasHistory";
+import { colors } from "../config/colors";
 
 export const defaultHex =
   "0000000000000000000000000000000000000000000000000000000000000000";
@@ -65,7 +66,9 @@ const Home: NextPage = () => {
             </Link>
           </nav>
 
-          <p className="mr-4 text-lg text-white">Your Hex:</p>
+          <p className="invisible mr-4 text-lg text-white lg:visible">
+            Your Hex:
+          </p>
           <input
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               if (e.target.value.length === 64) {
@@ -74,20 +77,20 @@ const Home: NextPage = () => {
               setDisplayedHex(e.target.value);
             }}
             value={displayedHex}
-            className="w-7/12 p-1 text-center rounded-sm shadow-inner"
+            className="invisible w-7/12 p-1 text-center rounded-sm shadow-inner lg:visible"
           />
           <button
-            className="px-6 py-1 ml-4 bg-pink-300 rounded-sm"
+            className="absolute items-center px-6 py-1 ml-4 bg-pink-300 rounded-sm lg:static right-3"
             onClick={randomizeHex}
           >
             Random
           </button>
         </section>
 
-        <div className="flex flex-col items-center justify-center w-full h-screen md:flex-row">
+        <div className="flex flex-col items-center justify-center w-full h-screen gap-8 md:flex-row">
           {/* Canvas */}
           <div
-            className="grid grid-cols-8 mb-5 mr-8 bg-white md:mb-0"
+            className="grid grid-cols-8 mb-5 bg-white md:mb-0"
             style={{ boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px" }}
           >
             {hex.split("").map((h, i) => {
@@ -101,7 +104,7 @@ const Home: NextPage = () => {
                     );
                   }}
                   key={i}
-                  className="w-12 h-12 cursor-pointer md:w-20 md:h-20 hover:border-2 hover:border-solid hover:border-black"
+                  className="cursor-pointer w-14 h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 hover:border-2 hover:border-solid hover:border-black"
                   style={{ backgroundColor: colors[h] }}
                 ></div>
               );
@@ -109,15 +112,15 @@ const Home: NextPage = () => {
           </div>
           {/* Color Selection */}
           <div>
-            <div className="grid grid-cols-4 gap-2 mb-5">
+            <div className="grid grid-cols-8 gap-2 mb-5 md:grid-cols-4">
               {Object.keys(colors).map((hexValue: string) => {
                 return (
                   <div
                     key={hexValue}
+                    className={`flex items-center justify-center w-12 h-12 lg:w-20 lg:h-20 text-2xl font-light  hover:border-2 hover:border-solid hover:border-black cursor-pointer  rounded-sm `}
                     onClick={() => {
                       setSelectedHexValue(hexValue);
                     }}
-                    className={`flex items-center justify-center w-12 h-12 md:w-20 md:h-20 text-2xl font-light  hover:border-2 hover:border-solid hover:border-black cursor-pointer  rounded-sm `}
                     style={{
                       backgroundColor: colors[hexValue],
                       border:
@@ -128,7 +131,7 @@ const Home: NextPage = () => {
               })}
             </div>
             <div className="flex justify-between w-full ">
-              <div className="flex gap-4">
+              <div className="flex gap-1 lg:gap-4">
                 <button
                   onClick={handleUndo}
                   className="px-5 py-1 text-gray-100 bg-black rounded-sm "
@@ -150,7 +153,7 @@ const Home: NextPage = () => {
                   setDisplayedHex(defaultHex);
                   handleResetHistory();
                 }}
-                className="px-5 py-1 text-white bg-red-600 rounded-sm "
+                className="px-5 py-1 ml-1 text-white bg-red-600 rounded-sm"
               >
                 Reset
               </button>
