@@ -40,6 +40,14 @@ const Home: NextPage = () => {
       <div className="flex flex-col items-center w-full ">
         <NavBar />
         <div className="w-full overflow-x-hidden h-[88vh] mt-32">
+          <button
+            className=" border-gray-900 border-[1px] bg-gradient-to-b from-black to-black absolute top-1/2  left-1/2 -mt-4 transform -translate-x-1/2 -translate-y-1/2 px-16 py-6  bg-gray-800 rounded-lg text-slate-100 md:w-[350px] z-50 text-2xl shadow-lg tracking-wider"
+            style={{ boxShadow: "rgba(180, 250, 250, 0.4 ) 0px 5px 15px" }}
+            onClick={() => setIsStretched((prev) => !prev)}
+          >
+            Start Your Journey
+          </button>
+
           <div
             className="flex h-full"
             style={{
@@ -52,7 +60,7 @@ const Home: NextPage = () => {
                 <img
                   src={`images/${image}`}
                   alt={`Image ${index + 1}`}
-                  className="object-cover w-full h-full"
+                  className="object-cover w-full h-full "
                 />
               </div>
             ))}
@@ -93,12 +101,14 @@ const Home: NextPage = () => {
               The Gallery
             </h2>
             <p className="w-full md:max-w-[55%] text-2xl text-center md:text-left text-slate-100 font-light leading-10 tracking-wide">
-              As you enter the gallery, your gaze will meet the meticulously
-              curated collection of bitmap art pieces. Each artwork suspended on
-              the walls showcases the intricate craftsmanship and the
-              artist&apos;s ability to harness the power of pixels. The variety
-              of styles, themes, and techniques demonstrate the vastness of
-              creative expression within the realm of bitmap art.
+              The Bitmap Art Gallery is a revolutionary space that combines both
+              blockchain and pixel art. The gallery displays 8x8 pixel art
+              images which are directly stored on the blockchain through a coded
+              list of 16 color values known as the &apos;bitmap&apos;. As
+              visitors step into the gallery, the diverse range of styles,
+              themes, and techniques on display not only reflects the mastery of
+              the artists but also the infinite possibilities of expression
+              within the confines of bitmap art.
             </p>
           </div>
 
@@ -112,16 +122,15 @@ const Home: NextPage = () => {
                 The Studio
               </h2>
               <p className="w-full text-2xl font-light leading-9 tracking-wide text-center md:text-left text-slate-700">
-                Equipped with cutting-edge digital tools, artists can unleash
-                their creativity and mint their masterpieces as NFTs on the
-                Polygon blockchain. Each artwork is uniquely represented by a
-                64-character string, directly saved on the blockchain, ensuring
-                its immutable nature. These creations are seamlessly integrated
-                into the gallery&apos;s collection, allowing them to be admired
-                and cherished by all who visit.
+                As users paint, the bitmap is dynamically updated, capturing
+                their vision in real-time. Once satisfied, artists can mint
+                their work, immortalizing it not only in The Gallery, but also
+                on the blockchain as NFTs. Each piece of art is distinctively
+                symbolized by a 64-character string stored on-chain,
+                guaranteeing its unchangeable essence.
               </p>
               <button
-                className="top-0 px-16 py-6 mt-16 bg-black rounded-lg text-slate-100 animate-bounce md:w-[350px]"
+                className="top-0 px-16 py-4 mt-8 bg-black rounded-lg text-slate-100 animate-bounce md:w-[350px]"
                 onClick={() => setIsStretched((prev) => !prev)}
               >
                 Start Your Journey
