@@ -20,6 +20,7 @@ interface WalletContextValue {
   chainId: string;
   switchNetwork: (desiredChainId: string) => Promise<void>;
   addNetwork: () => Promise<void>;
+  getNetwork: () => Promise<void>;
   connectWallet: () => Promise<void>;
   provider: JsonRpcProvider | undefined;
   userProvider: Web3Provider | undefined;
@@ -31,10 +32,13 @@ export const WalletContext = createContext<WalletContextValue>({
   setAddress: () => {},
   switchNetwork: async () => {},
   addNetwork: async () => {},
+  getNetwork: async () => {},
   connectWallet: async () => {},
   provider: undefined,
   userProvider: undefined,
 });
+
+const WALLET_CONNECTED = "wallet_connected";
 
 export const WalletContextProvider = ({
   children,
@@ -48,11 +52,6 @@ export const WalletContextProvider = ({
   if (typeof window !== "undefined" && window.ethereum) {
     userProvider = new ethers.providers.Web3Provider(window.ethereum);
   }
-  console.log(
-    "hi",
-    process.env.NEXT_PUBLIC_NETWORK,
-    process.env.NEXT_PUBLIC_RPC_URL
-  );
 
   const [address, setAddress] = useState<string>("");
   const [chainId, setChainId] = useState<string>("");
@@ -64,6 +63,7 @@ export const WalletContextProvider = ({
       });
 
       handleAccountsChanged(accounts);
+      localStorage.setItem(WALLET_CONNECTED, JSON.stringify(true));
     } catch (error) {
       console.log("WalletContext::requestAccounts()::", error);
     }
@@ -74,6 +74,7 @@ export const WalletContextProvider = ({
       const networkId = await window.ethereum.request({
         method: "eth_chainId",
       });
+
       setChainId(networkId);
     } catch (error) {
       console.log("WalletContext::getNetwork()::", error);
@@ -139,8 +140,13 @@ export const WalletContextProvider = ({
     if (window.ethereum) {
       window.ethereum.on("accountsChanged", handleAccountsChanged);
       window.ethereum.on("chainChanged", handleChainChanged);
-      connectWallet();
-      getNetwork();
+      const prevConnectedWallet = localStorage.getItem(WALLET_CONNECTED);
+      (async () => {
+        if (prevConnectedWallet) {
+          await connectWallet();
+          await getNetwork();
+        }
+      })();
     }
 
     return () => {
@@ -161,6 +167,7 @@ export const WalletContextProvider = ({
     setAddress,
     switchNetwork,
     addNetwork,
+    getNetwork,
     connectWallet,
     provider,
     userProvider,

@@ -23,8 +23,14 @@ enum MintButtonMode {
 }
 
 const MintButton = ({ currentHex }: { currentHex: string }) => {
-  const { address, userProvider, chainId, connectWallet, switchNetwork } =
-    useWallet();
+  const {
+    address,
+    userProvider,
+    chainId,
+    connectWallet,
+    switchNetwork,
+    getNetwork,
+  } = useWallet();
   const [mintButtonMode, setMintButtonMode] = useState<MintButtonMode>();
 
   useEffect(() => {
@@ -36,6 +42,7 @@ const MintButton = ({ currentHex }: { currentHex: string }) => {
       }
 
       /* Check if user is connected to the desired chain */
+      console.log(address, chainId, contractChainId);
       if (chainId !== contractChainId) {
         setMintButtonMode(MintButtonMode.WRONG_NETWORK_SELECTED);
         return;
@@ -48,6 +55,7 @@ const MintButton = ({ currentHex }: { currentHex: string }) => {
   const handleMintClick = async () => {
     if (mintButtonMode === MintButtonMode.WALLET_NOT_CONNECTED) {
       await connectWallet();
+      await getNetwork();
       return;
     }
 
