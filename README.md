@@ -1,5 +1,10 @@
 # Bitmap Art Gallery
+
 Bitmap 8x8 pixel art stored on-chain.
+
+## Live Project
+
+https://bitmap-art.josht.art/
 
 ### How it works
 
