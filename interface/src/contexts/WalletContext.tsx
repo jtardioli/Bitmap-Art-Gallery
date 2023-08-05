@@ -9,8 +9,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { getNetworkConfig } from "../config";
-import { error } from "console";
+import { getNetworkConfig } from "../config/network";
 
 /* This avoids errors when accessing window.ethereum */
 declare let window: any;
@@ -37,19 +36,23 @@ export const WalletContext = createContext<WalletContextValue>({
   userProvider: undefined,
 });
 
-// const RPC_URL = "https://mainnet.optimism.io";
-const RPC_URL = "http://localhost:8545";
-
 export const WalletContextProvider = ({
   children,
 }: {
   children: ReactNode;
 }) => {
-  const provider = new ethers.providers.JsonRpcProvider(RPC_URL);
+  const provider = new ethers.providers.JsonRpcProvider(
+    process.env.NEXT_PUBLIC_RPC_URL
+  );
   let userProvider: Web3Provider | undefined;
   if (typeof window !== "undefined" && window.ethereum) {
     userProvider = new ethers.providers.Web3Provider(window.ethereum);
   }
+  console.log(
+    "hi",
+    process.env.NEXT_PUBLIC_NETWORK,
+    process.env.NEXT_PUBLIC_RPC_URL
+  );
 
   const [address, setAddress] = useState<string>("");
   const [chainId, setChainId] = useState<string>("");

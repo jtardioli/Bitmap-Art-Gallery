@@ -3,16 +3,15 @@ import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import {
   bitmapContractABI,
-  bitmapContractAddress,
+  getBitmapContractAddress,
 } from "../contracts/bitmapContract";
-import { Web3Provider } from "@ethersproject/providers";
 import { useWallet } from "../contexts/WalletContext";
 
 const useGetSvgs = () => {
   const { provider } = useWallet();
 
   const bitmapContract = new ethers.Contract(
-    bitmapContractAddress,
+    getBitmapContractAddress(),
     bitmapContractABI,
     provider
   );

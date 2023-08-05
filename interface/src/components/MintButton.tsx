@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import {
   bitmapContractABI,
-  bitmapContractAddress,
+  getBitmapContractAddress,
 } from "../contracts/bitmapContract";
 
 import styles from "../styles/Home.module.css";
@@ -9,8 +9,9 @@ import { useEffect, useState } from "react";
 import { useWallet } from "../contexts/WalletContext";
 import { Circles, SpinningCircles } from "react-loading-icons";
 import { createDelay } from "../utils/time";
+import { getNetworkConfig } from "../config/network";
 
-const optimismChainId = "0x7a69";
+const contractChainId = getNetworkConfig().chainId;
 
 enum MintButtonMode {
   WALLET_NOT_CONNECTED,
@@ -35,7 +36,7 @@ const MintButton = ({ currentHex }: { currentHex: string }) => {
       }
 
       /* Check if user is connected to the desired chain */
-      if (chainId !== optimismChainId) {
+      if (chainId !== contractChainId) {
         setMintButtonMode(MintButtonMode.WRONG_NETWORK_SELECTED);
         return;
       }
@@ -51,14 +52,14 @@ const MintButton = ({ currentHex }: { currentHex: string }) => {
     }
 
     if (mintButtonMode === MintButtonMode.WRONG_NETWORK_SELECTED) {
-      await switchNetwork(optimismChainId);
+      await switchNetwork(contractChainId);
       return;
     }
 
     if (mintButtonMode === MintButtonMode.READY_TO_MINT) {
       try {
         const bitmapContract = new ethers.Contract(
-          bitmapContractAddress,
+          getBitmapContractAddress(),
           bitmapContractABI,
           userProvider?.getSigner()
         );
