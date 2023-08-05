@@ -17,6 +17,6 @@ So, when given a 'bitmap' (the coded list of colors), it can then translate that
 Once you've created your bitmap artwork in the studio page you can mint it. This will save your bitmap with an associated tokenId forever in the blockchain. After that your artwork will be available for all to see in the gallery
 
 ![image](https://github.com/jtardioli/bitmap-art-gallery/assets/85530348/d143e1b5-3d8f-4579-93bc-66b9f0ffcfa6)
-![image](https://github.com/jtardioli/bitmap-art-gallery/assets/85530348/cd572e5c-1296-4632-87b1-2aca710b6c67)
 ![image](https://github.com/jtardioli/bitmap-art-gallery/assets/85530348/dd07d693-e31c-451a-9c18-99d1d4bb91b4)
+![image](https://github.com/jtardioli/bitmap-art-gallery/assets/85530348/b42eb2b1-aacd-44ac-a40a-1a509ec1082b)
 
