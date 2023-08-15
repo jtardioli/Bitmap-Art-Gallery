@@ -24,5 +24,14 @@ deploy-optimism:
 	--broadcast \
 	--verify \
 	--private-key $(PRIVATE_KEY) \
-	--etherscan-api-key $(ETHERSCAN_API_KEY) \
+	--etherscan-api-key $(OPTIMISM_API_KEY) \
+	-vvvv 
+
+deploy-optimism:
+	forge script src/scripts/DeployBitmap.s.sol:DeployBitmap \
+	--rpc-url $(BASE_RPC_URL) \
+	--broadcast \
+	--verify \
+	--private-key $(PRIVATE_KEY) \
+	--etherscan-api-key $(BASE_API_KEY) \
 	-vvvv 

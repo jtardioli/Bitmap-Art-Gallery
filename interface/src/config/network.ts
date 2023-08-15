@@ -14,7 +14,7 @@ export function getNetworkConfig(): NetworkConfig {
   if (process.env.NETWORK === "ANVIL") {
     return {
       chainId: "0x7a69", // 31337 - hexadecimal format
-      chainName: "Anvil", // replace with your chain name
+      chainName: "Anvil",
       nativeCurrency: {
         name: "ETH",
         symbol: "eth",
@@ -25,7 +25,7 @@ export function getNetworkConfig(): NetworkConfig {
   } else if (process.env.NEXT_PUBLIC_NETWORK === "SEPOLIA") {
     return {
       chainId: "0xaa36a7", // 11155111 - hexadecimal format
-      chainName: "Sepolia", // replace with your chain name
+      chainName: "Sepolia",
       nativeCurrency: {
         name: "ETH",
         symbol: "eth",
@@ -33,6 +33,18 @@ export function getNetworkConfig(): NetworkConfig {
       },
       rpcUrls: ["https://rpc.sepolia.dev"], // replace with your network's RPC URL
       blockExplorerUrls: ["https://sepolia.etherscan.io/"],
+    };
+  } else if (process.env.NEXT_PUBLIC_NETWORK === "BASE") {
+    return {
+      chainId: "0x2105",
+      chainName: "Base",
+      nativeCurrency: {
+        name: "ETH",
+        symbol: "eth",
+        decimals: 18,
+      },
+      rpcUrls: ["https://mainnet.base.org"], // replace with your network's RPC URL
+      blockExplorerUrls: ["https://basescan.org"],
     };
   } else {
     throw new Error("Invalid network: unable to return chain config");

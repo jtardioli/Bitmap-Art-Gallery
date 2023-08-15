@@ -96,6 +96,8 @@ const MintButton = ({ currentHex }: { currentHex: string }) => {
     }
   };
 
+  console.log(chainId);
+
   return (
     <button className={styles.rainbow} onClick={handleMintClick}>
       {mintButtonMode === MintButtonMode.WALLET_NOT_CONNECTED &&
