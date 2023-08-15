@@ -27,7 +27,7 @@ deploy-optimism:
 	--etherscan-api-key $(OPTIMISM_API_KEY) \
 	-vvvv 
 
-deploy-optimism:
+deploy-base:
 	forge script src/scripts/DeployBitmap.s.sol:DeployBitmap \
 	--rpc-url $(BASE_RPC_URL) \
 	--broadcast \
