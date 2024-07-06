@@ -6,6 +6,11 @@ Bitmap 8x8 pixel art stored on-chain.
 
 https://bitmap-art.josht.art/
 
+## Demo
+
+https://github.com/jtardioli/bitmap-art-gallery/assets/85530348/a95d3d42-eb6b-4a10-9d00-7dc07e36df7f
+
+
 ### How it works
 
 Bitmap art can be thought of as a digital art studio. It's able to generate 8x8 pixel art images directly in the blockchain
